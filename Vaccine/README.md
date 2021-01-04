@@ -140,7 +140,7 @@ By inserting a single `'`character into the search field and pressing enter, we 
     - `' UNION SELECT NULL, 'a', NULL, NULL, NULL --` : VALID
     - `' UNION SELECT NULL, NULL, 'a', NULL, NULL --` : VALID
     - `' UNION SELECT NULL, NULL, NULL, 'a', NULL --` : VALID
-    - `' UNION SELECT NULL, NULL, NULL , NULL, 'a' --` : VALID
+    - `' UNION SELECT NULL, NULL, NULL, NULL, 'a' --` : VALID
 
     From this, we know that we can extract valuable information in form of strings when modifying index 1-4 of the UNION query.
 
@@ -165,9 +165,9 @@ By inserting a single `'`character into the search field and pressing enter, we 
 
 5) PROFIT
 
-![](pics/reverse_shell.png)
+    ![](pics/reverse_shell.png)
 
-We now have access to the server!
+    We now have access to the server!
 
 Btw, this all could have also been done automatically by using `sqlmap`, but for the sake of learning: keep doing it manually!
 
