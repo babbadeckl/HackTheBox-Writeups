@@ -9,3 +9,6 @@
 
 3. [Starting Point: Shield](Shield)
    - Windows, Wordpress, Metasploit, Priv-Escalation
+
+4. [Starting Point: Pathfinder](Pathfinder)
+   - Windows, Active Directory, Kerberos, Attack Graph
