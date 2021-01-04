@@ -29,7 +29,7 @@ It relatively quickly finds a directory called `/wordpress`. Let's head over to 
 
 ![](pics/wordpress.png)
 
-The wordpress website is apparently a company's website that deals with electric trucks. It has two big buttons, which both have no functionality. Furthermore, it has an additional tab called `BLOG`, which leads us to their blod (also implemented with wordpress).
+The wordpress website is apparently a company's website that deals with electric trucks. It has two big buttons, which both have no functionality. Furthermore, it has an additional tab called `BLOG`, which leads us to their blog (also implemented with wordpress).
 
 ![](pics/blog.png)
 
@@ -37,7 +37,7 @@ On the blog-website, we also have the possibility to Login, which leads us to fo
 
 ![](pics/wp_login.png)
 
-I tried bruteforcing the login with username `admin`, as Wordpress has the bad behaviour of leaking usernames. It basically gives you a different error message, if you guessed the username right, but the password is still wrong.
+I tried bruteforcing the login with username `admin`, as Wordpress has the bad behaviour of leaking usernames. It basically gives you a different error message, if you guessed the username correctly.
 
 ![](pics/error1.png)
 
@@ -48,7 +48,7 @@ Unfortunately, I had no success in doing so. After a few hours of research, I to
 Anyway...
 
 ## Exploitation
-Now that we are logged in with the obvious credentials `admin:P@s5w0rd!`, and have full access to the Wordpress admin dashboard, we can setup a reverse shell to the server. We gonna use `metasploit` for that, as windows systems are always a bit tricky.
+Now that we are logged in with the **obvious** credentials `admin:P@s5w0rd!`, and have full access to the Wordpress admin dashboard, we can setup a reverse shell to the server. We gonna use `metasploit` for that, as windows systems are always a bit tricky.
 
 So we open `msfconsole` and search for a suiteable module.
 
@@ -58,7 +58,7 @@ We type `use 0` to select this module. Afterwards we type `show options` to see 
 
 ![](pics/metasploit_options.png)
 
-After configuring it for your machine like that:
+After configuring it for our machine like that:
 
 ![](pics/metasploit_filled_options.png)
 
@@ -75,7 +75,7 @@ OS          : Windows NT SHIELD 10.0 build 14393 (Windows Server 2016) i586
 Meterpreter : php/windows
 ```
 
-We see that this is rather old Windows Server version. Let's see if it has any know vulnerabilities regarding privilege escalation.
+We see that this is a rather old Windows Server version. Let's see if it has any know vulnerabilities regarding privilege escalation.
 
 And indeed! It's called `Rotten Potato` ([Github](https://github.com/foxglovesec/RottenPotato), [Youtube](https://www.youtube.com/watch?v=8Wjs__mWOKI)). For our case, we will use a slight modification of that exploit called `Juicy Potato` ([Github]( https://github.com/ohpe/juicy-potato/)).
 
