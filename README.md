@@ -8,4 +8,4 @@
    - Linux, Web, John, SQL Injection, Reverse Shell, Priv-Escalation
 
 3. [Starting Point: Shield](Shield)
-   - Windows, 
+   - Windows, Wordpress, Metasploit, Priv-Escalation
