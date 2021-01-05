@@ -5,17 +5,20 @@
 ```
 rustscan 10.10.10.49 -- -sC -sV -o port_scan
 
-
+PORT    STATE SERVICE REASON
+22/tcp  open  ssh     syn-ack
+80/tcp  open  http    syn-ack
+443/tcp open  https   syn-ack
 ```
 
 ### Examining Port 80 - Apache Server
 
 ![](pics/login.png)
 
-When accessing the open port 80 via a browser, we can see a login page. in the previous machine (Included), we found the credentials `Daniel:>SNDv*2wzLWf` stored in a SQL dump. Using them, we can successfully login and we are redirected to the application's website, which seems to be some kind of online store / delivery service.
+When accessing the open port 80 via a browser, we can see a login page. In the previous machine (Included), we found the credentials `Daniel:>SNDv*2wzLWf` stored in a SQL dump. Using them, we can successfully login and we are redirected to the application's website, which seems to be some kind of online store / delivery service.
 ![](pics/delivery.png)
 
-The website provides several functionality, one of which is for submitting orders. 
+The website provides several functionalities, one of which is for submitting orders. 
 
 ![](pics/order.png)
 
