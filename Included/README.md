@@ -29,7 +29,7 @@ reveals the `/etc/passwd` file of the server.
 
 ![](pics/etc_passwd.png)
 
-Now we check if we can also access `/proc/self/environ`. This file hosts the initial environment of the Apache process. Thus, the environmental variable User-Agent is likely to appear there. If we can access it, then we can easily create a reverse shell by injecting php code as e.g. the user-agent in our request to the server (=Proc Environ Injection). Unfortunately, we cannot access it.
+Now we check if we can also access `/proc/self/environ`. This file hosts the initial environment of the Apache process. Thus, the environmental variable User-Agent is likely to appear there. If we can access it, then we can easily create a reverse shell by injecting php code as e.g. the User-Agent in our request to the server (=Proc Environ Injection). Unfortunately, we cannot access it.
 
 Another possibility would be to access `/var/log/apache2/access.log` after we sent a request to the website with PHP code as file parameter. The PHP code would then be executed, when loading the log file (=Log Poisoning). However, that's also not possible. Therefore, we need another technique.
 
@@ -71,7 +71,7 @@ http://10.10.10.55/?file=../../../../../var/lib/tftpboot/shell.php
 
 After several hours of research, I again had to take a look at the writeup, as I could not find any vulnerability on the system. And indeed! There is no vulnerability. The writeup simply says "The password Sheffield19 found in the previous can be used to switch to mike"... Like seriously, come on... Again one of those "we found the password in any of the previous machines for a completely unrelated user. It's obvious that you should use this password here as well". **FACEPALM** But w/e....
 
-Now that we are user `mike`, we can look for way to escalate our privileges. But first let's retrieve the user flag: `a56ef91d70cfbf2cdb8f454c006935a1`
+Now that we are user `mike`, we can look for a way to escalate our privileges. But first let's retrieve the user flag: `a56ef91d70cfbf2cdb8f454c006935a1`
 
 Running the command `id`, we see that mike is in the group `lxc`. Following [this article](https://book.hacktricks.xyz/linux-unix/privilege-escalation/interesting-groups-linux-pe/lxd-privilege-escalation), on how to obtain root privileges by abusing the `security.privileged=true` feature of lxc, we get root accces.
 
