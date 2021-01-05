@@ -17,3 +17,6 @@
 
 6. [Starting Point: Markup](Markup)
    - Windows, XXE
+
+7. [Starting Point: Guard](Guard)
+   - Linux, Restricted Shell, Cracking
