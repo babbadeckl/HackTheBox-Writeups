@@ -28,7 +28,7 @@ uid=1000(daniel) gid=1000(picasso) groups=1000(picasso),27(sudo)
 
 ## Exploitation
 
-Having access to Daniel's home directory, we can directly read the user flag. But hmmm ... somehow `cat` does not give any output. I seems like some commands were modified. However, `more` works perfectly fine. User flag: `209333652507f89d0d3a41ff4070c081`
+Having access to Daniel's home directory, we can directly read the user flag. But hmmm ... somehow `cat` does not give any output. It seems like we have some restrictions. However, `more` works perfectly fine. User flag: `209333652507f89d0d3a41ff4070c081`
 
 
 Let's look for some privilege escalation!
@@ -88,7 +88,7 @@ RESTRICTED SHELL
 
        These restrictions are enforced after any startup files are read.
 
-       When a command that is found to be a shell script is executed, rbash turns off any restrictions in the shell spawned to execute the scrip
+       When a command that is found to be a shell script is executed, rbash turns off any restrictions in the shell spawned to execute the script
 ```
 
 Apparently, that is some kind of restricted shell, that's highly limiting our functionalities. 
@@ -110,6 +110,8 @@ daniel@guard:/home$ pwd
 daniel@guard:/home$ 
 ```
 
+(The official writeup does it with the `man man` trick and spawns the bash from within there)
+
 Enumerating the system, I found some interesting backups in the `/backups` directory, namely a backup of the shadow file, for which we have read permissions.
 
 ```
@@ -117,9 +119,9 @@ root:$6$KIP2PX8O$7VF4mj1i.w/.sIOwyeN6LKnmeaFTgAGZtjBjRbvX4pEHvx1XUzXLTBBu0jRLPeZ
 daniel:$6$2EEJjgy86KrZ.cbl$oCf1MzIsN7N9KziBNo7uYrHLueZLM7wySrsFYxlNtO5NVhfVsyWCSKiIURNUxOOwC0tm1kyQsiv93imCwLM0k1:18326:0:99999:7:::
 ```
 
-Let's copy it to our local machine and let `john` try to crack the passwords for daniel, or in the best case for root. If we get the password for daniel, then we can atleast check if he is on the sudoers list.
+Let's copy it to our local machine and let `john` try to crack the passwords for daniel, or in the best case for root. If we get the password for daniel, then we can atleast check if he is on the sudoers list and can execute some helpful commands that we can exploit to gain root privileges.
 
-Yes! John is successful in cracking the root password!
+But it's better than we thought. John is successful in cracking the root password!
 
 ```
 $ john shadow -w=/usr/share/wordlists/rockyou.txt 
