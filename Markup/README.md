@@ -11,7 +11,7 @@ PORT    STATE SERVICE REASON
 443/tcp open  https   syn-ack
 ```
 
-### Examining Port 80 - Apache Server
+### Examine Port 80 - Apache Server
 
 ![](pics/login.png)
 

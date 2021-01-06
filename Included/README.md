@@ -15,7 +15,7 @@ PORT   STATE SERVICE REASON  VERSION
 ```
 So apparently only a single port is open. It's exposing an Apache webserver. Let's take a look at it.
 
-### Examining Port 80 - Apache Server
+### Examine Port 80 - Apache Server
 
 ![](pics/website.png)
 

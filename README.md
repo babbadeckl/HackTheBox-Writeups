@@ -20,3 +20,6 @@
 
 7. [Starting Point: Guard](Guard)
    - Linux, Restricted Shell, Cracking
+
+8. [Starting Point: Base](Base)
+   - Linux, PHP authentication, Directory Discovery
