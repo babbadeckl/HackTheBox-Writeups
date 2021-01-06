@@ -143,7 +143,7 @@ $ id
 uid=33(www-data) gid=33(www-data) groups=33(www-data)
 ```
 
-Inspecting the `config.php`, which we previously found in the login folder, we see the admin password and username:
+Inspecting the `config.php`, which we previously found in the login directory, we can now see the admin password and username:
 
 ```
 <?php
