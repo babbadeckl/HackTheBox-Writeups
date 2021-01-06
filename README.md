@@ -23,3 +23,6 @@
 
 8. [Starting Point: Base](Base)
    - Linux, PHP authentication, Directory Discovery
+
+9. [Beginner Track: Lame](Lame)
+   - Linux, smb
