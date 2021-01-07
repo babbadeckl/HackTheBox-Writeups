@@ -38,7 +38,7 @@ It's basically just comparing two values (EAX and EDX). Depending on their equal
 
 Let's set a breakpoint at the `CALL sub_404628` of the "main graph" and run the program. We can then investigate which values are in those two registers. (Shortcuts: F2 = breakpoint, F9 = start the program)
 
-Once reaching that breakpoint (I entered the password `test`), we can take a look at the General Registers, especially RAX and RAX.
+Once reaching that breakpoint (I entered the password `test`), we can take a look at the General Registers, especially RAX and RDX.
 
 ![](pics/registers.png)
 

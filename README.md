@@ -28,4 +28,4 @@
    - Linux, smb
 
 10. [Beginner Track: Find The Easy Pass](FindTheEasyPass)
-   - Reverse Engineering, EXE
+    - Reverse Engineering, exe
