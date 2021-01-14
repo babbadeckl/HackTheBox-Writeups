@@ -16,6 +16,7 @@
 - [Lame](Lame) [Linux, smb]
 - [Legacy](Legacy) [Windows, well known vulnerability]
 - [Beep](Beep) [Linux, LFI, FreePBX, elastix, vtigerCRM, SMTP]
+- [Devel](Devel) [Windows, IIS, Priv-Esc]
   
 ## Challenges
 
