@@ -99,15 +99,17 @@ gobuster dir -u "http://bank.htb" -w /usr/share/wordlists/dirb/big.txt -x php
 /uploads (Status: 301)
 ```
 
-We find several php files (login.php which we already know, logout.php, index.php and support.php). As well as a directory called uploads. This seems suspicious. Let's check out the php files, to see if we can use one to upload something.
+This time, we find several php files (login.php which we already know, logout.php, index.php and support.php), as well as a directory called uploads. This seems suspicious. Let's check out the php files, to see if we can use one to upload something.
 
 ## Exploitation
 
 The problem is, that both, support.php and index.php, forward to login.php. However, there is a nice trick to circumvent this by using burpsuite! 
 
+If we send a request to index.php and intercept it with Burp we get this:
+
 ![](pics/index_php_req.png)
 
-As response we get following:
+As response from the server we get following:
 
 ```
 HTTP/1.1 302 Found
@@ -123,7 +125,7 @@ Connection: close
 Content-Type: text/html
 ```
 
-When we exchange the `302 Found` with `200 OK`, then we can trick our browser to not forward to the location header `login.php`.
+When we exchange the `302 Found` with `200 OK`, then we can trick our browser to not redirect to the location header `login.php`. As a result we get to see the index.php file:
 
 ![](pics/index_php.png)
 
@@ -142,17 +144,22 @@ After trying some techniques and still not having any success, I took a closer l
 
 ![](pics/hint.png)
 
-The source code contained a debug comment, stating that php files should be named `.htb`, if you wanna upload them for debug purposes. So I renamed my .php file and uploaded it again. This time it worked!
+The source code contains an HTML comment, stating that php files should be named `.htb`, if you wanna upload them for debug purposes. So I renamed my .php file and uploaded it again. This time it worked!
 
 ![](pics/upload.png)
 
-Now when clicking on the Attachment link (or accessing the file in the uploads directory), we get a reverse shell:
+Now when clicking on the Attachment link (or accessing the file in the uploads directory), we get a reverse shell as user `www-data`:
 
 ![](pics/reverse-shell.png)
 
 Now that we have access to the server, we can obtain the user flag.
 
-Afterwards, can search for valuable files that help us at escalating privileges. In the directory `/var/www/bank`, I found a file called `bankreports.txt`, that we have not yet seen.
+```
+$ cat user.txt
+872a3bf9df963d168aeb9985f6910e43
+```
+
+Afterwards, we have to search for valuable files that help us at escalating privileges. In the directory `/var/www/bank`, I found a file called `bankreports.txt`, that we have not yet seen.
 
 ```
 +=================+
@@ -168,19 +175,22 @@ Transactions: 8
 Balance: 1.337$
 ```
 
-Maybe this is the password for the user chris on the machine. Let's try it. Unfortunately, it's not working. But we can try it on the login.php website. Maybe we can gain more information there.
+Maybe this is the password for the user chris on the machine. Let's try it.
+
+Unfortunately, it's not working. But we can try it on the login.php website. Maybe we can gain more information there.
 
 ![](pics/chris_login.png)
 
-We now have access to Chris' bank account. Problem is that this won't help bring us any further.
-After searching for a while, I saw a file called 'user.php' in the directory `/var/www/bank/inc`.
+We now have access to Chris' bank account. The problem is that this won't bring us any further.
+
+So back to enumeration on the webserver... After searching for a while, I found a file called 'user.php' in the directory `/var/www/bank/inc`.
 It contains the mysql login details of root:
 
 ```
  $mysql = new mysqli("localhost", "root", "!@#S3cur3P4ssw0rd!@#",
 ```
 
- Maybe, root has used the same password for the server. Let's try to login as root. Does not work as well. Seems like a dead end.
+ Maybe, root has used the same password for the server. Let's try to login as root. But ... Does not work as well. Seems like a dead end.
 
  Next step was to check for files with the SUID bit set.
 
@@ -196,15 +206,12 @@ It contains the mysql login details of root:
 /usr/bin/passwd
 ```
 
-The binary `var/htb/bin/emergency` seemed to be a bit suspicious. I executed it and obtained root privileges (still not sure what the purpose of this binary should have been :D). Now we can also get the root flag!
+The binary `var/htb/bin/emergency` seemed to be suspicious. It belonged to root and had the SUID bit set. So I executed it and obtained root privileges (still not sure what the purpose of this binary should have been :D). Now we can also get the root flag!
+
+
+Alternatively, we could have also changed the password of root, by manipulating the `/etc/passwd` file, to which we have write permissions.
 
 ## Post-Exploitation
-
-User flag
-```
-$ cat user.txt
-872a3bf9df963d168aeb9985f6910e43
-```
 
 Root flag
 ```
