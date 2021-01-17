@@ -116,3 +116,10 @@ User Flag
 type user.txt.txt
 d0c39409d7b994a9a1389ebf38ef5f73
 ```
+
+Root Flag
+
+```
+type root.txt
+51ed1b36553c8461f4552c2e92b3eeed
+```
