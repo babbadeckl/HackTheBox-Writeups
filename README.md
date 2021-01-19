@@ -21,6 +21,7 @@
 - [Bank](Bank) [Linux, DNS, Routing]
 - [Blocky](Blocky) [Linux, SQL, Wordpress]
 - [Shocker](Shocker) [Linux, well known vulnerability, cgi]
+- [Mirai](Mirai) [Linux, well known vulnerability, data recovery]
   
 ## Challenges
 
