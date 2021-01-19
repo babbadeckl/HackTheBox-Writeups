@@ -89,14 +89,14 @@ root@raspberrypi:~# id
 uid=0(root) gid=0(root) groups=0(root)
 ```
 
-So basically we have pwned the machine. Atleast that's what I've thought. When trying to read the root flag it states:
+So basically we have pwned the machine. Atleast that's what I thought. When trying to read the root flag it states:
 
 ```
 root@raspberrypi:~# cat /root/root.txt
 I lost my original root.txt! I think I may have a backup on my USB stick...
 ```
 
-So we run to inspect the various filesystems:
+Hm ok... Let's inspect the various filesystems on the machine to see if we can find something interesting:
 
 ```
 root@raspberrypi:~# df -h
