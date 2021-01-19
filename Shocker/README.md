@@ -101,7 +101,7 @@ The script apparently executes the command `uptime`.
 
 *When a webserver uses the Common Gateway Interface (CGI) to handle a document request, it passes various details of the reuqest to a handler program in the environment variable list. For example, the variable HTTP_USER_AGENT has a value that, in normal usage, identifies the program sending the request. If the request handler is a Bash script, or if it executes one for example using the system(3) call, Bash will receive the environment variables passed by the server and will process them as described above. This provides a means for an attacker to trigger the Shellshock vulnerability with a specially crafted server request. Security documentation for the widely used Apache web server states "CGI scripts can ... be extremely dangerous if they are not carefully checked." and other methods of handling web server requests are often used* (https://github.com/opsxcq/exploit-CVE-2014-6271)
 
-## Gaining Initial Foothold
+## Gaining an Initial Foothold
 
 To establish a reverse shell, we first set up our netcat listener and then execute following:
 

@@ -220,7 +220,7 @@ we receive a reverse shell!
 
 ![](pics/reverse_shell.png)
 
-## Prvilege Escalation
+## Privilege Escalation
 
 We know that user `notch` exists. Let's examine his home directory.
 
