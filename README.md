@@ -20,6 +20,7 @@
 - [Optimum](Optimum) [Windows, HttpFileServer, Priv-Esc]
 - [Bank](Bank) [Linux, DNS, Routing]
 - [Blocky](Blocky) [Linux, SQL, Wordpress]
+- [Shocker](Shocker) [Linux, well known vulnerability, cgi]
   
 ## Challenges
 
