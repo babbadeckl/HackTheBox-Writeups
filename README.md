@@ -23,6 +23,9 @@
 - [Shocker](Shocker) [Linux, well known vulnerability, cgi]
 - [Mirai](Mirai) [Linux, well known vulnerability, data recovery]
 - [Valentine](Valentine) [Linux, well known vulnerability]
+- [Laboratory](Laboratory) [Linux, Gitlab RCE/LFI]
+- [Academy](Academy) [Linux, Laravel]
+- [Doctor](Doctor)[Linux, SSTI, splunk]
   
 ## Challenges
 
